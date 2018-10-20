@@ -1,0 +1,29 @@
+{
+  "name": "mongo-crud",
+  "version": "1.0.0",
+  "description": "A basic CRUD api built with MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/torchhound/mongo-crud.git"
+  },
+  "keywords": [
+    "mongodb",
+    "crud",
+    "express"
+  ],
+  "author": "Joe Cieslik",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/torchhound/mongo-crud/issues"
+  },
+  "homepage": "https://github.com/torchhound/mongo-crud#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.8"
+  }
+}
