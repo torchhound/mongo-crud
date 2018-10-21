@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const routes = require('./routes.js')
+const routes = require('./routes/routes.js')
 const port = process.env.PORT || 80
 const app = express()
 const http = require('http').Server(app)

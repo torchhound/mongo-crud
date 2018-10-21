@@ -4,6 +4,6 @@ WORKDIR /home/nodejs/app
 COPY package*.json ./
 RUN npm install
 COPY . /home/nodejs/app
-ARG port=80
-EXPOSE port
+ARG PORT=80
+EXPOSE $PORT
 CMD ["node", "index.js"]

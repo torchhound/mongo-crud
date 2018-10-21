@@ -24,6 +24,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "mongodb": "^3.1.8"
+    "mongodb": "^3.1.8",
+    "promise-retry": "^1.1.1"
   }
 }

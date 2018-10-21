@@ -1,19 +1,34 @@
 const express = require('express')
+const promiseRetry = require('promise-retry')
 
-const Document = require('./models/Document')
+const Document = require('../models/Document')
 
 const MongoClient = require('mongodb').MongoClient
 const router = express.Router()
-const url = `mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@database:27017`
-var db
+const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@database:27017`
+const options = {
+  useNewUrlParser: true, 
+  reconnectTries: 60, 
+  reconnectInterval: 1000
+}
+const promiseRetryOptions = {
+  retries: options.reconnectTries,
+  factor: 2,
+  minTimeout: options.reconnectInterval,
+  maxTimeout: 5000
+}
+let db
 
-MongoClient.connect(url, function(err, database) {
-  if (err) {
-    console.log(`FATAL MONGODB CONNECTION ERROR: ${err}`)
-    process.exit(1)
-  }
-  db = database
-})
+promiseRetry((retry, number) => {
+  logger.info(`MongoClient connecting to ${url} - retry number: ${number}`)
+  return MongoClient.connect(url, options, function(err, database) {
+    if (err) {
+      console.log(`FATAL MONGODB CONNECTION ERROR: ${err}`)
+      process.exit(1)
+    }
+    db = database
+  }).catch(retry)
+}, promiseRetryOptions)
 
 router.get('/documents/all', function(req, res, next) {
   db.Documents.find({}).then(documents => {
@@ -65,7 +80,12 @@ router.delete('/documents/delete/:id', function(req, res, next) {
 router.post('/documents/edit/:id', function(req, res, next) {
   db.Documents.updateOne({
     '_id': req.params.id
-  }, {}).then(_ => {
+  }, {$set:
+    {
+      title: req.body.title,
+      username: req.body.username,
+      body: req.body.body
+    }}).then(_ => {
     res.status(200)
   }).catch(err => {
     res.status(400).send({'error':err})
