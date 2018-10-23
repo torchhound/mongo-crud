@@ -6,19 +6,25 @@ const Document = require('../models/Document')
 const app = require('../index')
 let documentId
 
+before(done => {
+  app.on( 'APP_STARTED', () => {
+    done()
+  })
+})
+
 describe('API Integration Test', function () {
-  after(function () {
+  after(() => {
     process.exit(0)
   })
 
-  it('Runs all tests', function (done) {
+  it('Runs all tests', done => {
     test('/api/documents/new', assert => {
       request(app)
         .post('/api/documents/new')
         .send(new Document('test title', 'test user', 'test body'))
         .expect(200)
         .end((err, res) => {
-          if (err) return assert.fail(err + ' ' + JSON.stringify(res))
+          if (err) return assert.fail(JSON.stringify(res))
           assert.pass('Created a new document successfully, test passed!')
           assert.end()
         })
@@ -29,7 +35,7 @@ describe('API Integration Test', function () {
         .get('/api/documents/all')
         .expect(200)
         .end((err, res) => {
-          if (err) return assert.fail(err + ' ' + JSON.stringify(res))
+          if (err) return assert.fail(JSON.stringify(res))
           documentId = res[0]._id
           assert.pass('Got all documents successfully, test passed!')
           assert.end()
@@ -41,7 +47,7 @@ describe('API Integration Test', function () {
         .get(`/api/documents/${documentId}`)
         .expect(200)
         .end((err, res) => {
-          if (err) return assert.fail(err + ' ' + JSON.stringify(res))
+          if (err) return assert.fail(JSON.stringify(res))
           assert.pass('Got a specific document successfully, test passed!')
           assert.end()
         })
@@ -53,7 +59,7 @@ describe('API Integration Test', function () {
         .send(new Document('test title edit', 'test user edit', 'test body edit'))
         .expect(200)
         .end((err, res) => {
-          if (err) return assert.fail(err + ' ' + JSON.stringify(res))
+          if (err) return assert.fail(JSON.stringify(res))
           assert.pass('Edited a document successfully, test passed!')
           assert.end()
         })
@@ -64,9 +70,10 @@ describe('API Integration Test', function () {
         .delete(`/api/documents/delete/${documentId}`)
         .expect(200)
         .end((err, res) => {
-          if (err) return assert.fail(err + ' ' + JSON.stringify(res))
+          if (err) return assert.fail(JSON.stringify(res))
           assert.pass('Deleted a specific document successfully, test passed!')
           assert.end()
+          done()
         })
     })
   })

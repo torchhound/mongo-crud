@@ -1,5 +1,5 @@
 FROM mongo-crud_backend
-COPY tests tests
+COPY test test
 ENV NODE_ENV dev
 RUN npm install && npm install -g mocha
 ARG port=80

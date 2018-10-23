@@ -1,27 +1,10 @@
 const express = require('express')
 
 const Document = require('../models/Document')
-const MongoClient = require('mongodb').MongoClient
 const router = express.Router()
-const dbName = process.env.NODE_ENV === 'dev' ? 'database-test' : 'database' 
-const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${dbName}:27017?authMechanism=SCRAM-SHA-1&authSource=admin`
-const options = {
-  useNewUrlParser: true, 
-  reconnectTries: 60, 
-  reconnectInterval: 1000
-}
-let db
-
-MongoClient.connect(url, options, function(err, database) {
-  if (err) {
-    console.log(`FATAL MONGODB CONNECTION ERROR: ${err}:${err.stack}`)
-    process.exit(1)
-  }
-  db = database.db('api')
-})
 
 router.get('/documents/all', function(req, res, next) {
-  db.collection('documents').find({}).toArray((err, result) => {
+  req.app.locals.db.collection('documents').find({}).toArray((err, result) => {
     if (err) {
       res.status(400).send({'error': err})
     }
@@ -34,7 +17,7 @@ router.get('/documents/all', function(req, res, next) {
 })
 
 router.get('/documents/:id', function(req, res, next) {
-  db.collection('documents').findOne({
+  req.app.locals.db.collection('documents').findOne({
     '_id': req.params.id
   }, (err, result) => {
     if (err) {
@@ -50,7 +33,7 @@ router.get('/documents/:id', function(req, res, next) {
 
 router.post('/documents/new', function(req, res, next) {
   const newDocument = new Document(req.body.title, req.body.username, req.body.body)
-  db.collection('documents').insertOne({
+  req.app.locals.db.collection('documents').insertOne({
     newDocument
   }, (err, result) => {
     if (err) {
@@ -61,7 +44,7 @@ router.post('/documents/new', function(req, res, next) {
 })
 
 router.delete('/documents/delete/:id', function(req, res, next) {
-  db.collection('documents').destroy({
+  req.app.locals.db.collection('documents').destroy({
     '_id': req.params.id
   }, (err, result) => {
     if (err) {
@@ -72,7 +55,7 @@ router.delete('/documents/delete/:id', function(req, res, next) {
 })
 
 router.post('/documents/edit/:id', function(req, res, next) {
-  db.collection('documents').updateOne({
+  req.app.locals.db.collection('documents').updateOne({
     '_id': req.params.id
   }, 
   {$set:

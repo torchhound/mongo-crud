@@ -8,4 +8,4 @@ A basic CRUD API built with MongoDB and Express.
 
 # Test
 
-`docker-compose -f docker-compose.test.yml up --build`
+`docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit`
