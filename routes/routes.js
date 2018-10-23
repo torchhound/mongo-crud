@@ -1,94 +1,91 @@
 const express = require('express')
-const promiseRetry = require('promise-retry')
 
 const Document = require('../models/Document')
-
 const MongoClient = require('mongodb').MongoClient
 const router = express.Router()
-const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@database:27017`
+const dbName = process.env.NODE_ENV === 'dev' ? 'database-test' : 'database' 
+const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${dbName}:27017?authMechanism=SCRAM-SHA-1&authSource=admin`
 const options = {
   useNewUrlParser: true, 
   reconnectTries: 60, 
   reconnectInterval: 1000
 }
-const promiseRetryOptions = {
-  retries: options.reconnectTries,
-  factor: 2,
-  minTimeout: options.reconnectInterval,
-  maxTimeout: 5000
-}
 let db
 
-promiseRetry((retry, number) => {
-  logger.info(`MongoClient connecting to ${url} - retry number: ${number}`)
-  return MongoClient.connect(url, options, function(err, database) {
-    if (err) {
-      console.log(`FATAL MONGODB CONNECTION ERROR: ${err}`)
-      process.exit(1)
-    }
-    db = database
-  }).catch(retry)
-}, promiseRetryOptions)
+MongoClient.connect(url, options, function(err, database) {
+  if (err) {
+    console.log(`FATAL MONGODB CONNECTION ERROR: ${err}:${err.stack}`)
+    process.exit(1)
+  }
+  db = database.db('api')
+})
 
 router.get('/documents/all', function(req, res, next) {
-  db.Documents.find({}).then(documents => {
-    if (documents === undefined || documents.length === 0) {
+  db.collection('documents').find({}).toArray((err, result) => {
+    if (err) {
+      res.status(400).send({'error':err})
+    }
+    if (result === undefined || result.length === 0) {
       res.status(400).send({'error':'No documents in database'})
     } else {
-      res.status(200).send(documents)
+      res.status(200).send(result)
     }
-  }).catch(err => {
-    res.status(400).send({'error':err})
   })
 })
 
 router.get('/documents/:id', function(req, res, next) {
-  db.Documents.findOne({
+  db.collection('documents').findOne({
     '_id': req.params.id
-  }).then(document => {
-    if (document === undefined) {
+  }).toArray((err, result) => {
+    if (err) {
+      res.status(400).send({'error':err})
+    }
+    if (result === undefined) {
       res.status(400).send({'error':'No document matching that id was found'})
     } else {
-      res.status(200).send(document)
+      res.status(200).send(result)
     }
-  }).catch(err => {
-    res.status(400).send({'error':err})
   })
 })
 
 router.post('/documents/new', function(req, res, next) {
-  const newDocument = new Document()
-  db.Documents.insertOne({
+  const newDocument = new Document(req.body.title, req.body.username, req.body.body)
+  db.collection('documents').insertOne({
     newDocument
-  }).then(_ => {
+  }).toArray((err, result) => {
+    if (err) {
+      res.status(400).send({'error':err})
+    }
     res.status(200)
-  }).catch(err => {
-    res.status(400).send({'error':err})
   })
 })
 
 router.delete('/documents/delete/:id', function(req, res, next) {
-  db.Documents.destroy({
+  db.collection('documents').destroy({
     '_id': req.params.id
-  }).then(_ => {
-    req.status(200)
-  }).catch(err => {
-    res.status(400).send({'error':err})
+  }).toArray((err, result) => {
+    if (err) {
+      res.status(400).send({'error':err})
+    }
+    res.status(200)
   })
 })
 
 router.post('/documents/edit/:id', function(req, res, next) {
-  db.Documents.updateOne({
+  db.collection('documents').updateOne({
     '_id': req.params.id
-  }, {$set:
+  }, 
+  {$set:
     {
       title: req.body.title,
       username: req.body.username,
       body: req.body.body
-    }}).then(_ => {
+    }
+  }).toArray((err, result) => {
+    if (err) {
+      res.status(400).send({'error':err})
+    }
     res.status(200)
-  }).catch(err => {
-    res.status(400).send({'error':err})
   })
 })
 

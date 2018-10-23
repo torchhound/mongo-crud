@@ -1,28 +1,27 @@
 version: '3'
 services:
-  backend:
+  backend-test:
     build: 
       context: ./
-      dockerfile: Dockerfile.production 
+      dockerfile: Dockerfile.test
       args:
         port: ${PORT}
     env_file:
       - .env
-    restart: always
     ports:
       - "${PORT}:${PORT}"
     links:
-      - database
+      - database-test
     depends_on:
-      - database
+      - database-test
     environment:
-      WAIT_HOSTS: database:27017
-  database:
+      WAIT_HOSTS: database-test:27017
+  database-test:
     image: mongo:4.0
     env_file:
       - .env
     volumes:
-      - ".${MONGO_DATA_DIR}:${MONGO_DATA_DIR}"
+      - ".${MONGO_TEST_DATA_DIR}:${MONGO_TEST_DATA_DIR}"
     expose:
       - 27017
     command: "mongod --smallfiles --logpath=${MONGO_LOG_FILE}"

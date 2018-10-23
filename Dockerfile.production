@@ -1,0 +1,13 @@
+FROM node:10.12.0-alpine
+RUN mkdir -p /home/nodejs/app
+WORKDIR /home/nodejs/app
+ENV NODE_ENV prod
+COPY package*.json ./
+RUN npm install --only=production
+COPY . /home/nodejs/app
+RUN rm -rf tests/
+ARG port=80
+EXPOSE $port
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
+RUN chmod +x /wait
+CMD /wait && node index.js
