@@ -44,7 +44,7 @@ router.post('/documents/new', function(req, res, next) {
 })
 
 router.delete('/documents/delete/:id', function(req, res, next) {
-  req.app.locals.db.collection('documents').destroy({
+  req.app.locals.db.collection('documents').deleteOne({
     '_id': req.params.id
   }, (err, result) => {
     if (err) {
@@ -54,7 +54,7 @@ router.delete('/documents/delete/:id', function(req, res, next) {
   })
 })
 
-router.post('/documents/edit/:id', function(req, res, next) {
+router.patch('/documents/edit/:id', function(req, res, next) {
   req.app.locals.db.collection('documents').updateOne({
     '_id': req.params.id
   }, 

@@ -13,10 +13,6 @@ before(done => {
 })
 
 describe('API Integration Test', function () {
-  after(() => {
-    process.exit(0)
-  })
-
   it('Runs all tests', done => {
     test('/api/documents/new', assert => {
       request(app)
@@ -36,7 +32,7 @@ describe('API Integration Test', function () {
         .expect(200)
         .end((err, res) => {
           if (err) return assert.fail(JSON.stringify(res))
-          documentId = res[0]._id
+          documentId = res.body[0]._id
           assert.pass('Got all documents successfully, test passed!')
           assert.end()
         })
@@ -55,7 +51,7 @@ describe('API Integration Test', function () {
 
     test('/api/documents/edit/:id', assert => {
       request(app)
-        .post(`/api/documents/edit/${documentId}`)
+        .patch(`/api/documents/edit/${documentId}`)
         .send(new Document('test title edit', 'test user edit', 'test body edit'))
         .expect(200)
         .end((err, res) => {

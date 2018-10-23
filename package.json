@@ -4,7 +4,7 @@
   "description": "A basic CRUD api built with MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/unitTests.js"
+    "test": "mocha test/unitTests.js --exit"
   },
   "repository": {
     "type": "git",
