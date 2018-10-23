@@ -8,8 +8,6 @@ services:
         port: ${PORT}
     env_file:
       - .env
-    ports:
-      - "${PORT}:${PORT}"
     links:
       - database-test
     depends_on:

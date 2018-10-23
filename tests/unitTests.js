@@ -6,7 +6,7 @@ const Document = require('../models/Document')
 const app = require('../index')
 let documentId
 
-describe('Wiki Integration Test', function () {
+describe('API Integration Test', function () {
   after(function () {
     process.exit(0)
   })

@@ -23,7 +23,7 @@ MongoClient.connect(url, options, function(err, database) {
 router.get('/documents/all', function(req, res, next) {
   db.collection('documents').find({}).toArray((err, result) => {
     if (err) {
-      res.status(400).send({'error':err})
+      res.status(400).send({'error': err})
     }
     if (result === undefined || result.length === 0) {
       res.status(400).send({'error':'No documents in database'})
@@ -36,9 +36,9 @@ router.get('/documents/all', function(req, res, next) {
 router.get('/documents/:id', function(req, res, next) {
   db.collection('documents').findOne({
     '_id': req.params.id
-  }).toArray((err, result) => {
+  }, (err, result) => {
     if (err) {
-      res.status(400).send({'error':err})
+      res.status(400).send({'error': err})
     }
     if (result === undefined) {
       res.status(400).send({'error':'No document matching that id was found'})
@@ -52,22 +52,22 @@ router.post('/documents/new', function(req, res, next) {
   const newDocument = new Document(req.body.title, req.body.username, req.body.body)
   db.collection('documents').insertOne({
     newDocument
-  }).toArray((err, result) => {
+  }, (err, result) => {
     if (err) {
-      res.status(400).send({'error':err})
+      res.status(400).send({'error': err})
     }
-    res.status(200)
+    res.status(200).send(result)
   })
 })
 
 router.delete('/documents/delete/:id', function(req, res, next) {
   db.collection('documents').destroy({
     '_id': req.params.id
-  }).toArray((err, result) => {
+  }, (err, result) => {
     if (err) {
-      res.status(400).send({'error':err})
+      res.status(400).send({'error': err})
     }
-    res.status(200)
+    res.status(200).send(result)
   })
 })
 
@@ -81,11 +81,11 @@ router.post('/documents/edit/:id', function(req, res, next) {
       username: req.body.username,
       body: req.body.body
     }
-  }).toArray((err, result) => {
+  }, (err, result) => {
     if (err) {
-      res.status(400).send({'error':err})
+      res.status(400).send({'error': err})
     }
-    res.status(200)
+    res.status(200).send(result)
   })
 })
 
