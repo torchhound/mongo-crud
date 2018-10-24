@@ -5,3 +5,5 @@ LICENSE
 README.md
 .gitignore
 .git/
+example.env
+.travis.yml
