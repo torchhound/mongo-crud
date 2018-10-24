@@ -7,7 +7,7 @@ before_install:
   - sudo service mysql stop
 
 install:
-  - docker-compose up --build
+  - docker-compose up -d
 
 script:
   - docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
