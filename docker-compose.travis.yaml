@@ -1,0 +1,25 @@
+version: '3'
+services:
+  backend-test:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.travis
+      args:
+        port: ${PORT}
+    env_file:
+      - example.env
+    links:
+      - database-test
+    depends_on:
+      - database-test
+    environment:
+      WAIT_HOSTS: database-test:27017
+  database-test:
+    image: mongo:4.0
+    env_file:
+      - example.env
+    volumes:
+      - ".${MONGO_TEST_DATA_DIR}:${MONGO_TEST_DATA_DIR}"
+    expose:
+      - 27017
+    command: "mongod --smallfiles --logpath=${MONGO_LOG_FILE}"
