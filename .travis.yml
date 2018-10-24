@@ -6,7 +6,7 @@ before_install:
   - sudo service mysql stop
 
 install:
-  - docker-compose build
+  - docker-compose up -d
 
 script:
   - docker-compose -f docker-compose.travis.yml up --build --abort-on-container-exit
