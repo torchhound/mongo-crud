@@ -1,4 +1,4 @@
-FROM mongocrud_backend
+FROM docker_backend
 COPY test test
 ENV NODE_ENV dev
 RUN npm install && npm install -g mocha
