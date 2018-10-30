@@ -1,10 +1,13 @@
 {
   "name": "mongo-crud",
   "version": "1.0.0",
-  "description": "A basic CRUD api built with MongoDB",
+  "description": "A CRUD api built with MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/unitTests.js --exit"
+    "test": "docker-compose -f docker/docker-compose.test.yml up --build --abort-on-container-exit",
+    "travis": "docker-compose -f docker/docker-compose.travis.yml up --build --abort-on-container-exit",
+    "production": "docker-compose -f docker/docker-compose.yml up -d",
+    "build": "docker-compose -f docker/docker-compose.yml up --build"
   },
   "repository": {
     "type": "git",

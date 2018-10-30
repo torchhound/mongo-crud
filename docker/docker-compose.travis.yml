@@ -2,12 +2,12 @@ version: '3'
 services:
   backend-test:
     build: 
-      context: ./
-      dockerfile: Dockerfile.travis
+      context: ../
+      dockerfile: docker/Dockerfile.travis
       args:
         port: ${PORT}
     env_file:
-      - .env
+      - ../.env
     links:
       - database-test
     depends_on:
@@ -17,7 +17,7 @@ services:
   database-test:
     image: mongo:4.0
     env_file:
-      - .env
+      - ../.env
     volumes:
       - ".${MONGO_TEST_DATA_DIR}:${MONGO_TEST_DATA_DIR}"
     expose:

@@ -2,12 +2,12 @@ version: '3'
 services:
   backend:
     build: 
-      context: ./
-      dockerfile: Dockerfile.production 
+      context: ../
+      dockerfile: docker/Dockerfile.production 
       args:
         port: ${PORT}
     env_file:
-      - .env
+      - ../.env
     restart: always
     ports:
       - "${PORT}:${PORT}"
@@ -20,7 +20,7 @@ services:
   database:
     image: mongo:4.0
     env_file:
-      - .env
+      - ../.env
     volumes:
       - ".${MONGO_DATA_DIR}:${MONGO_DATA_DIR}"
     expose:
