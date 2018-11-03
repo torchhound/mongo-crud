@@ -8,10 +8,6 @@ services:
         port: ${PORT}
     env_file:
       - ../.env
-    links:
-      - database-test
-    depends_on:
-      - database-test
     environment:
       WAIT_HOSTS: database-test:27017
   database-test:

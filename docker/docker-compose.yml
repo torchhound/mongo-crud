@@ -11,10 +11,6 @@ services:
     restart: always
     ports:
       - "${PORT}:${PORT}"
-    links:
-      - database
-    depends_on:
-      - database
     environment:
       WAIT_HOSTS: database:27017
   database:
