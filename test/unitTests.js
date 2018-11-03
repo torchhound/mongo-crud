@@ -12,7 +12,7 @@ before(done => {
   })
 })
 
-describe('API Integration Test', function () {
+describe('API Integration Test', () => {
   it('Runs all tests', done => {
     test('/api/documents/new', assert => {
       request(app)
