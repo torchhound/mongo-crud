@@ -10,4 +10,4 @@ install:
   - npm run build
 
 script:
-  - npm run travis
+  - npm test
