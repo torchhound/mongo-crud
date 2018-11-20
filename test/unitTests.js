@@ -14,9 +14,9 @@ before(done => {
 
 describe('API Integration Test', () => {
   it('Runs all tests', done => {
-    test('/api/documents/new', assert => {
+    test('/api/documents', assert => {
       request(app)
-        .post('/api/documents/new')
+        .post('/api/documents')
         .send(new Document('test title', 'test user', 'test body'))
         .expect(200)
         .end((err, res) => {
@@ -26,9 +26,9 @@ describe('API Integration Test', () => {
         })
     })
 
-    test('/api/documents/all', assert => {
+    test('/api/documents', assert => {
       request(app)
-        .get('/api/documents/all')
+        .get('/api/documents')
         .expect(200)
         .end((err, res) => {
           if (err) return assert.fail(JSON.stringify(res))
@@ -49,9 +49,9 @@ describe('API Integration Test', () => {
         })
     })
 
-    test('/api/documents/edit/:id', assert => {
+    test('/api/documents/:id', assert => {
       request(app)
-        .patch(`/api/documents/edit/${documentId}`)
+        .put(`/api/documents/${documentId}`)
         .send(new Document('test title edit', 'test user edit', 'test body edit'))
         .expect(200)
         .end((err, res) => {
@@ -61,9 +61,9 @@ describe('API Integration Test', () => {
         })
     })
 
-    test('/api/documents/delete/:id', assert => {
+    test('/api/documents/:id', assert => {
       request(app)
-        .delete(`/api/documents/delete/${documentId}`)
+        .delete(`/api/documents/${documentId}`)
         .expect(200)
         .end((err, res) => {
           if (err) return assert.fail(JSON.stringify(res))
